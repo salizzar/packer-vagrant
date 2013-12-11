@@ -1,0 +1,83 @@
+{
+  "variables": {
+    "box_name":       "debian-7.2.0",
+    "box_type":       "amd64-base",
+    "box_memory":     "256",
+    "box_cpus":       "1",
+
+    "ssh_user":       "vagrant",
+    "ssh_pass":       "vagrant",
+    "hostname":       "vagrant-debian-7.2.0",
+    "domain":         "vagrantup.com"
+  },
+
+  "builders": [
+    {
+      "type":               "virtualbox",
+      "vm_name":            "{{ user `box_name` }}-{{ user `box_type` }}",
+      "guest_os_type":      "Debian_64",
+      "disk_size":          "4096",
+
+      "iso_url":            "http://cdimage.debian.org/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-netinst.iso",
+      "iso_checksum":       "b86774fe4de88be6378ba3d71b8029bd",
+      "iso_checksum_type":  "md5",
+
+      "http_directory":     "http",
+
+      "ssh_username":       "root",
+      "ssh_password":       "{{ user `ssh_pass` }}",
+      "ssh_wait_timeout":   "100000s",
+
+      "shutdown_command":   "echo {{ user `ssh_user` }} | sudo halt -p",
+
+      "vboxmanage": [
+        [ "modifyvm", "{{ .Name }}", "--memory", "{{ user `box_memory` }}" ],
+        [ "modifyvm", "{{ .Name }}", "--cpus",   "{{ user `box_cpus`   }}" ]
+      ],
+
+      "boot_command": [
+        "<esc> ",
+        "install ",
+        "auto ",
+        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "locale=en_US ",
+        "keymap=en_US ",
+        "console-setup/ask_detect=false ",
+        "hostname={{ user `hostname` }} ",
+        "domain={{ user `domain` }} ",
+        "passwd/root-password={{ user `ssh_pass` }} ",
+        "passwd/root-password-again={{ user `ssh_pass` }} ",
+        "passwd/user-fullname={{ user `ssh_user` }} ",
+        "passwd/username={{ user `ssh_user` }} ",
+        "passwd/user-password={{ user `ssh_pass` }} ",
+        "passwd/user-password-again={{ user `ssh_pass` }} ",
+        "<enter><wait>"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type":                 "vagrant",
+      "output":               "{{ user `box_name` }}-{{ user `box_type` }}.box",
+      "vagrantfile_template": "templates/{{ user `box_name` }}.vagrantfile"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "execute_command": "echo 'root' | sh '{{ .Path }}'",
+      "type": "shell",
+      "override": {
+        "virtualbox": {
+          "scripts": [
+            "scripts/sudoers.sh",
+            "scripts/sshd.sh",
+            "scripts/virtualbox.sh",
+            "scripts/vagrant.sh"
+          ]
+        }
+      }
+    }
+  ]
+}
