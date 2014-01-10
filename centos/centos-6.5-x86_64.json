@@ -1,0 +1,72 @@
+{
+  "variables": {
+    "box_name":       "centos-6.5",
+    "box_type":       "x86_64-base",
+    "box_memory":     "512",
+    "box_cpus":       "1",
+
+    "ssh_user":       "vagrant",
+    "ssh_pass":       "vagrant",
+    "hostname":       "vagrant-centos-6.5",
+    "domain":         "vagrantup.com"
+  },
+
+  "builders": [
+    {
+      "type":               "virtualbox",
+      "vm_name":            "{{ user `box_name` }}-{{ user `box_type` }}",
+      "guest_os_type":      "RedHat_64",
+      "disk_size":          "4096",
+
+      "iso_url":            "http://mirror.globo.com/centos/6.5/isos/x86_64/CentOS-6.5-x86_64-netinstall.iso",
+      "iso_checksum":       "939fd1d87c11ffe7795324438b85adfb",
+      "iso_checksum_type":  "md5",
+
+      "http_directory":     "http",
+
+      "ssh_username":       "root",
+      "ssh_password":       "{{ user `ssh_pass` }}",
+      "ssh_wait_timeout":   "100000s",
+
+      "shutdown_command":   "echo {{ user `ssh_user` }} | sudo halt -p",
+
+      "vboxmanage": [
+        [ "modifyvm", "{{ .Name }}", "--memory", "{{ user `box_memory` }}" ],
+        [ "modifyvm", "{{ .Name }}", "--cpus",   "{{ user `box_cpus`   }}" ]
+      ],
+
+      "boot_command": [
+        "<tab> ",
+        "text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg ",
+        "lang=en_US.UTF-8 ",
+        "<enter><wait>"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type":                 "vagrant",
+      "output":               "{{ user `box_name` }}-{{ user `box_type` }}.box",
+      "vagrantfile_template": "templates/{{ user `box_name` }}.vagrantfile"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "execute_command": "echo 'root' | sh '{{ .Path }}'",
+      "type": "shell",
+      "override": {
+        "virtualbox": {
+          "scripts": [
+            "scripts/locale.sh",
+            "scripts/sudoers.sh",
+            "scripts/sshd.sh",
+            "scripts/virtualbox.sh",
+            "scripts/vagrant.sh"
+          ]
+        }
+      }
+    }
+  ]
+}
