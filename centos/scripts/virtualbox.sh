@@ -1,3 +1,7 @@
+#
+# Virtualbox steps.
+#
+
 # install kernel source
 yum install -y kernel-devel-$(uname -r)
 

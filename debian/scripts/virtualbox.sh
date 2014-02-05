@@ -1,3 +1,7 @@
+#
+# Virtualbox steps.
+#
+
 apt-get update > /dev/null
 
 # remove vbox kernel module
@@ -18,5 +22,8 @@ umount /mnt
 /etc/init.d/vboxadd start
 
 # remove kernel source
-apt-get purge --yes --force-yes linux-headers-$(uname -r) xorg
+apt-get remove --yes --force-yes linux-headers-$(uname -r) xorg
+
+# remove all non-used packages
+apt-get autoremove --purge --yes --force-yes
 

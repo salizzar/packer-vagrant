@@ -1,3 +1,7 @@
+#
+# Sudoers steps.
+#
+
 # create file
 echo '
 Defaults:%admin !requiretty

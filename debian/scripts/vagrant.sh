@@ -1,4 +1,6 @@
 #
+# Vagrant steps.
+#
 
 # create group admin
 groupadd admin
