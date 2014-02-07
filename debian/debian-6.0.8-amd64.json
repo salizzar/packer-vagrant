@@ -1,7 +1,10 @@
 {
   "variables": {
-    "box_name":       "debian-6.0.8",
-    "box_type":       "amd64-base",
+    "box_ostype":     "debian",
+    "box_osversion":  "6.0.8",
+    "box_nick":       "squeeze",
+    "box_arch":       "x64",
+    "box_type":       "base",
     "box_memory":     "256",
     "box_cpus":       "1",
 
@@ -13,10 +16,10 @@
 
   "builders": [
     {
-      "type":               "virtualbox",
-      "vm_name":            "{{ user `box_name` }}-{{ user `box_type` }}",
+      "type":               "virtualbox-iso",
+      "vm_name":            "{{ user `box_ostype` }}-{{ user `box_nick` }}-{{ user `box_arch` }}-{{ user `box_type` }}",
       "guest_os_type":      "Debian_64",
-      "disk_size":          "4096",
+      "disk_size":          "5500",
 
       "iso_url":            "http://cdimage.debian.org/cdimage/archive/6.0.8/amd64/iso-cd/debian-6.0.8-amd64-netinst.iso",
       "iso_checksum":       "d675b89fa6b241e6e40783296a5bd92e",
@@ -59,8 +62,7 @@
   "post-processors": [
     {
       "type":                 "vagrant",
-      "output":               "{{ user `box_name` }}-{{ user `box_type` }}.box",
-      "vagrantfile_template": "templates/{{ user `box_name` }}.vagrantfile"
+      "output":               "{{ user `box_ostype` }}-{{ user `box_nick` }}-{{ user `box_arch` }}-{{ user `box_type` }}.box"
     }
   ],
 
@@ -69,7 +71,7 @@
       "execute_command": "echo 'root' | sh '{{ .Path }}'",
       "type": "shell",
       "override": {
-        "virtualbox": {
+        "virtualbox-iso": {
           "scripts": [
             "scripts/sudoers.sh",
             "scripts/sshd.sh",

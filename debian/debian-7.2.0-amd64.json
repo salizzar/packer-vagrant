@@ -1,25 +1,28 @@
 {
   "variables": {
-    "box_name":       "debian-7.2.0",
-    "box_type":       "amd64-base",
+    "box_ostype":     "debian",
+    "box_osversion":  "7.3.0",
+    "box_nick":       "wheezy",
+    "box_arch":       "x64",
+    "box_type":       "base",
     "box_memory":     "256",
     "box_cpus":       "1",
 
     "ssh_user":       "vagrant",
     "ssh_pass":       "vagrant",
-    "hostname":       "vagrant-debian-7.2.0",
+    "hostname":       "vagrant-debian-7.3.0",
     "domain":         "vagrantup.com"
   },
 
   "builders": [
     {
-      "type":               "virtualbox",
-      "vm_name":            "{{ user `box_name` }}-{{ user `box_type` }}",
+      "type":               "virtualbox-iso",
+      "vm_name":            "{{ user `box_ostype` }}-{{ user `box_nick` }}-{{ user `box_arch` }}-{{ user `box_type` }}",
       "guest_os_type":      "Debian_64",
-      "disk_size":          "4096",
+      "disk_size":          "5500",
 
-      "iso_url":            "http://cdimage.debian.org/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-netinst.iso",
-      "iso_checksum":       "b86774fe4de88be6378ba3d71b8029bd",
+      "iso_url":            "http://cdimage.debian.org/cdimage/release/7.3.0/amd64/iso-cd/debian-7.3.0-amd64-netinst.iso",
+      "iso_checksum":       "72473e8a5e65b61acc7efde90d9f71d1",
       "iso_checksum_type":  "md5",
 
       "http_directory":     "http",
@@ -59,8 +62,7 @@
   "post-processors": [
     {
       "type":                 "vagrant",
-      "output":               "{{ user `box_name` }}-{{ user `box_type` }}.box",
-      "vagrantfile_template": "templates/{{ user `box_name` }}.vagrantfile"
+      "output":               "{{ user `box_ostype` }}-{{ user `box_nick` }}-{{ user `box_arch` }}-{{ user `box_type` }}.box"
     }
   ],
 
@@ -69,7 +71,7 @@
       "execute_command": "echo 'root' | sh '{{ .Path }}'",
       "type": "shell",
       "override": {
-        "virtualbox": {
+        "virtualbox-iso": {
           "scripts": [
             "scripts/sudoers.sh",
             "scripts/sshd.sh",
