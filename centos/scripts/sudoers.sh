@@ -2,12 +2,19 @@
 # Sudoers steps.
 #
 
-# create file
-echo '
+vagrant=<<-VAGRANT
 Defaults:%admin !requiretty
 %admin ALL=(ALL) NOPASSWD:ALL
-' > /etc/sudoers.d/vagrant
+VAGRANT
 
-# fix permission
-chmod 0440 /etc/sudoers.d/vagrant
+# centos 5 does not have sudoers.d dir
+if [ ! -d /etc/sudoers.d ] ; then
+  echo "$vagrant" >> /etc/sudoers
+else
+  # create file
+  echo "$vagrant" > /etc/sudoers.d/vagrant
+
+  # fix permission
+  chmod 0440 /etc/sudoers.d/vagrant
+fi
 
