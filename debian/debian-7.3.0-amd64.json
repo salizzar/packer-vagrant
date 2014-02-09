@@ -21,7 +21,7 @@
       "guest_os_type":      "Debian_64",
       "disk_size":          "5500",
 
-      "iso_url":            "http://cdimage.debian.org/cdimage/release/7.3.0/amd64/iso-cd/debian-7.3.0-amd64-netinst.iso",
+      "iso_url":            "http://cdimage.debian.org/cdimage/release/{{ user `box_osversion` }}/amd64/iso-cd/debian-{{ user `box_osversion` }}-amd64-netinst.iso",
       "iso_checksum":       "72473e8a5e65b61acc7efde90d9f71d1",
       "iso_checksum_type":  "md5",
 

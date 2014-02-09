@@ -21,7 +21,7 @@
       "guest_os_type":      "Debian_64",
       "disk_size":          "5500",
 
-      "iso_url":            "http://cdimage.debian.org/cdimage/archive/6.0.8/amd64/iso-cd/debian-6.0.8-amd64-netinst.iso",
+      "iso_url":            "http://cdimage.debian.org/cdimage/archive/{{ user `box_osversion` }}/amd64/iso-cd/debian-{{ user `box_osversion` }}-amd64-netinst.iso",
       "iso_checksum":       "d675b89fa6b241e6e40783296a5bd92e",
       "iso_checksum_type":  "md5",
 
