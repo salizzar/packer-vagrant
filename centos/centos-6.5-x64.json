@@ -44,7 +44,7 @@
 
       "boot_command": [
         "<tab> ",
-        "text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg ",
+        "text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks-{{ user `box_osversion` }}.cfg ",
         "lang=en_US.UTF-8 ",
         "<enter><wait>"
       ]
