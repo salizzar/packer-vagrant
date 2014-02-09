@@ -8,6 +8,10 @@
     "box_memory":     "512",
     "box_cpus":       "1",
 
+    "iso_arch":       "x86_64",
+    "iso_type":       "netinstall",
+    "iso_md5":        "939fd1d87c11ffe7795324438b85adfb",
+
     "ssh_user":       "vagrant",
     "ssh_pass":       "vagrant",
     "hostname":       "vagrant-centos-6.5",
@@ -21,8 +25,8 @@
       "guest_os_type":      "RedHat_64",
       "disk_size":          "4096",
 
-      "iso_url":            "http://mirror.globo.com/centos/6.5/isos/x86_64/CentOS-6.5-x86_64-netinstall.iso",
-      "iso_checksum":       "939fd1d87c11ffe7795324438b85adfb",
+      "iso_url":            "http://mirror.globo.com/centos/{{ user `box_osversion` }}/isos/{{ user `iso_arch` }}/CentOS-{{ user `box_osversion` }}-{{ user `iso_arch` }}-{{ user `iso_type` }}.iso",
+      "iso_checksum":       "{{ user `iso_md5` }}",
       "iso_checksum_type":  "md5",
 
       "http_directory":     "http",
