@@ -8,6 +8,10 @@
     "box_memory":     "256",
     "box_cpus":       "1",
 
+    "iso_arch":       "amd64",
+    "iso_type":       "netinst",
+    "iso_md5":        "72473e8a5e65b61acc7efde90d9f71d1",
+
     "ssh_user":       "vagrant",
     "ssh_pass":       "vagrant",
     "hostname":       "vagrant-debian-7.3.0",
@@ -21,8 +25,8 @@
       "guest_os_type":      "Debian_64",
       "disk_size":          "5500",
 
-      "iso_url":            "http://cdimage.debian.org/cdimage/release/{{ user `box_osversion` }}/amd64/iso-cd/debian-{{ user `box_osversion` }}-amd64-netinst.iso",
-      "iso_checksum":       "72473e8a5e65b61acc7efde90d9f71d1",
+      "iso_url":            "http://cdimage.debian.org/cdimage/release/{{ user `box_osversion` }}/{{ user `iso_arch` }}/iso-cd/debian-{{ user `box_osversion` }}-{{ user `iso_arch` }}-{{ user `iso_type` }}.iso",
+      "iso_checksum":       "{{ user `iso_md5` }}",
       "iso_checksum_type":  "md5",
 
       "http_directory":     "http",
