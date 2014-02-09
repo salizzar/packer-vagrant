@@ -1,0 +1,78 @@
+{
+  "variables": {
+    "box_ostype":     "centos",
+    "box_osversion":  "5.10",
+    "box_nick":       "5.10",
+    "box_arch":       "x64",
+    "box_type":       "base",
+    "box_memory":     "512",
+    "box_cpus":       "1",
+
+    "iso_arch":       "x86_64",
+    "iso_type":       "netinstall",
+    "iso_md5":        "e09e44f04f0a4b97b04935e0ba88833f",
+
+    "ssh_user":       "vagrant",
+    "ssh_pass":       "vagrant",
+    "hostname":       "vagrant-centos-5.10",
+    "domain":         "vagrantup.com"
+  },
+
+  "builders": [
+    {
+      "type":               "virtualbox-iso",
+      "vm_name":            "{{ user `box_ostype` }}-{{ user `box_nick` }}-{{ user `box_arch` }}-{{ user `box_type` }}",
+      "guest_os_type":      "RedHat_64",
+      "disk_size":          "4096",
+
+      "iso_url":            "http://mirror.globo.com/centos/{{ user `box_osversion` }}/isos/{{ user `iso_arch` }}/CentOS-{{ user `box_osversion` }}-{{ user `iso_arch` }}-{{ user `iso_type` }}.iso",
+      "iso_checksum":       "{{ user `iso_md5` }}",
+      "iso_checksum_type":  "md5",
+
+      "http_directory":     "http",
+
+      "ssh_username":       "root",
+      "ssh_password":       "{{ user `ssh_pass` }}",
+      "ssh_wait_timeout":   "100000s",
+
+      "shutdown_command":   "echo {{ user `ssh_user` }} | sudo halt -p",
+
+      "vboxmanage": [
+        [ "modifyvm", "{{ .Name }}", "--memory", "{{ user `box_memory` }}" ],
+        [ "modifyvm", "{{ .Name }}", "--cpus",   "{{ user `box_cpus`   }}" ]
+      ],
+
+      "boot_command": [
+        "<tab> ",
+        "text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks-{{ user `box_osversion` }}.cfg ",
+        "lang=en_US ",
+        "<enter><wait>"
+      ]
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type":                 "vagrant",
+      "output":               "{{ user `box_ostype` }}-{{ user `box_nick` }}-{{ user `box_arch` }}-{{ user `box_type` }}.box"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "execute_command": "echo 'root' | sh '{{ .Path }}'",
+      "type": "shell",
+      "override": {
+        "virtualbox-iso": {
+          "scripts": [
+            "scripts/locale.sh",
+            "scripts/sudoers.sh",
+            "scripts/sshd.sh",
+            "scripts/virtualbox.sh",
+            "scripts/vagrant.sh"
+          ]
+        }
+      }
+    }
+  ]
+}
