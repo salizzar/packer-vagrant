@@ -37,11 +37,6 @@
 
       "shutdown_command":   "echo {{ user `ssh_user` }} | sudo halt -p",
 
-      "vboxmanage": [
-        [ "modifyvm", "{{ .Name }}", "--memory", "{{ user `box_memory` }}" ],
-        [ "modifyvm", "{{ .Name }}", "--cpus",   "{{ user `box_cpus`   }}" ]
-      ],
-
       "boot_command": [
         "<esc> ",
         "install ",
@@ -59,31 +54,32 @@
         "passwd/user-password={{ user `ssh_pass` }} ",
         "passwd/user-password-again={{ user `ssh_pass` }} ",
         "<enter><wait>"
+      ],
+
+      "vboxmanage": [
+        [ "modifyvm", "{{ .Name }}", "--memory", "{{ user `box_memory` }}" ],
+        [ "modifyvm", "{{ .Name }}", "--cpus",   "{{ user `box_cpus`   }}" ]
+      ]
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type":             "shell",
+      "execute_command":  "echo 'root' | sh '{{ .Path }}'",
+      "scripts": [
+        "scripts/sudoers.sh",
+        "scripts/sshd.sh",
+        "scripts/virtualbox.sh",
+        "scripts/vagrant.sh"
       ]
     }
   ],
 
   "post-processors": [
     {
-      "type":                 "vagrant",
-      "output":               "{{ user `box_ostype` }}-{{ user `box_nick` }}-{{ user `box_arch` }}-{{ user `box_type` }}.box"
-    }
-  ],
-
-  "provisioners": [
-    {
-      "execute_command": "echo 'root' | sh '{{ .Path }}'",
-      "type": "shell",
-      "override": {
-        "virtualbox-iso": {
-          "scripts": [
-            "scripts/sudoers.sh",
-            "scripts/sshd.sh",
-            "scripts/virtualbox.sh",
-            "scripts/vagrant.sh"
-          ]
-        }
-      }
+      "type":   "vagrant",
+      "output": "{{ user `box_ostype` }}-{{ user `box_nick` }}-{{ user `box_arch` }}-{{ user `box_type` }}.box"
     }
   ]
 }
